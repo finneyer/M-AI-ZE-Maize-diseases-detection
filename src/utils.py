@@ -1,6 +1,8 @@
 from PIL import ImageDraw, ImageFont
 import random
+import streamlit as st
 
+@st.cache_data
 def draw_fake_detections(image):
     draw = ImageDraw.Draw(image)
     width, height = image.size
