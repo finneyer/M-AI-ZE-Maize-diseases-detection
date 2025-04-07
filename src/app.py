@@ -1,6 +1,6 @@
 import streamlit as st
-import pages.single_image as single_image
-import pages.batch_field as batch_field
+import views.single_image as single_image
+import views.batch_field as batch_field
 
 st.set_page_config(page_title="Corn Disease Detector", layout="centered")
 
