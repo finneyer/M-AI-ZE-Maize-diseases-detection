@@ -46,16 +46,16 @@ def process_and_display_images():
 
                 st.write("🔍 Simulating detection...")
                 if st.session_state["detection_results_batch"][i] is None:
-                    st.session_state["detection_results_batch"][i] = draw_fake_detections(image.copy())
+                    st.session_state["detection_results_batch"][i] , number_of_infects= draw_fake_detections(image.copy())
 
                 st.image(st.session_state["detection_results_batch"][i], caption="Detected Disease (Mock)", use_container_width=True)
-                infected_count += 1
+                infected_count += number_of_infects
         return num_uploaded, infected_count
     return 0, 0
 
 def display_overall_summary(num_uploaded, infected_count):
     if num_uploaded > 0:
-        infection_percentage = (infected_count / num_uploaded) * 100
+        infection_percentage = (infected_count / (num_uploaded*10)) * 100
         st.subheader("Overall Infection Summary")
         st.write(f"Number of images uploaded: {num_uploaded}")
         st.write(f"Number of images with simulated detection: {infected_count}")

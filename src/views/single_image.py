@@ -29,7 +29,7 @@ def display_results():
 
         st.write("🔍 Simulating detection...")
         if st.session_state["detection_result"] is None:
-            st.session_state["detection_result"] = draw_fake_detections(st.session_state["uploaded_image"].copy())
+            st.session_state["detection_result"], _ = draw_fake_detections(st.session_state["uploaded_image"].copy())
 
         st.image(st.session_state["detection_result"], caption="Detected Disease (Mock)", use_container_width=True)
     else:
