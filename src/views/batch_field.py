@@ -3,7 +3,7 @@ from PIL import Image
 from utils import draw_fake_detections # Assuming cache_single_image_detection is meant for the single image script
 
 def display_title_and_description():
-    st.title("🌍 Field (Batch) Detection")
+    st.title("Batch Detection")
     st.write("Upload up to 10 images from your cornfield to simulate disease detection and get an infection percentage.")
 
 def initialize_session_state():
@@ -44,7 +44,7 @@ def process_and_display_images():
                 image = st.session_state["uploaded_images_batch"][i]
                 st.image(image, caption="Original", use_container_width=True)
 
-                st.write("🔍 Simulating detection...")
+                st.write("Simulating detection...")
                 if st.session_state["detection_results_batch"][i] is None:
                     st.session_state["detection_results_batch"][i] , number_of_infects= draw_fake_detections(image.copy())
 

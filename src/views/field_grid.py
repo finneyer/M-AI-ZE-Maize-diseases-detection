@@ -4,15 +4,15 @@ from utils import draw_fake_detections
 
 def display_title_and_description():
     """Displays the title and description for the grid page."""
-    st.title("🌱 Field Disease Detection Grid (Testing)")
-    st.write("Upload exactly 9 images from your cornfield. The results will be displayed in a 3x3 grid indicating simulated disease detection.")
+    st.title("Field Disease Detection Grid")
+    st.write("Upload exactly 64 images from your cornfield. The results will be displayed in a 8x8 grid indicating simulated disease detection.")
 
 def initialize_session_state():
     """Initializes the necessary session state variables for the grid."""
     if "uploaded_images_grid" not in st.session_state:
         st.session_state["uploaded_images_grid"] = []
     if "detection_results_grid" not in st.session_state:
-        st.session_state["detection_results_grid"] = [None] * 9  # Initialize for 9 images
+        st.session_state["detection_results_grid"] = [None] * 64  # Initialize for 64 images
 
 def handle_image_upload(num_images_expected):
     """Handles the upload of images and validates the number, also updates session state."""
@@ -78,7 +78,7 @@ def display_upload_instructions(num_images_expected):
 
 def run():
     """Main function to run the grid display application."""
-    grid_size = 3
+    grid_size = 8
     num_images_expected = grid_size * grid_size
 
     display_title_and_description()

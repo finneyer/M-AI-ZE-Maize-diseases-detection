@@ -5,12 +5,12 @@ import views.field_grid as field_grid
 
 st.set_page_config(page_title="Corn Disease Detector", layout="centered")
 
-st.sidebar.title("🧭 Navigation")
-page = st.sidebar.radio("Go to", ["📷 Single Image Detection", "🌍 Field (Batch) Detection", "🌱 Field Disease Detection"])
+st.sidebar.title("Navigation")
+page = st.sidebar.radio("Go to", ["Single Image Detection", "Batch Detection", "Field Disease Detection"])
 
-if page == "📷 Single Image Detection":
+if page == "Single Image Detection":
     single_image.run()
-elif page == "🌍 Field (Batch) Detection":
+elif page == "Batch Detection":
     batch_field.run()
-elif page == "🌱 Field Disease Detection":
+elif page == "Field Disease Detection":
     field_grid.run()

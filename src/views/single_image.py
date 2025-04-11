@@ -4,7 +4,7 @@ from utils import draw_fake_detections
 import uuid
 
 def display_title_and_description():
-    st.title("📷 Single Image Detection")
+    st.title("Single Image Detection")
     st.write("Upload a cornfield image and we’ll simulate disease detection.")
 
 def initialize_session_state():
@@ -27,7 +27,7 @@ def display_results():
     if st.session_state["uploaded_image"] is not None:
         st.image(st.session_state["uploaded_image"], caption=f"Original: {st.session_state['uploaded_filename']}", use_container_width=True)
 
-        st.write("🔍 Simulating detection...")
+        st.write("Simulating detection...")
         if st.session_state["detection_result"] is None:
             st.session_state["detection_result"], _ = draw_fake_detections(st.session_state["uploaded_image"].copy())
 
