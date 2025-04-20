@@ -60,9 +60,37 @@ def add_image_size_to_df(df, image_size_dict):
     return df
 
 def copy_imgs_to_folder(df, dst_folder, org_img_folder_path):
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         img_filename = row['image']
         img_type = row['type']
         src_path = org_img_folder_path + '/images_' + img_type
         
         shutil.copy(src_path, dst_folder + '/' + image)
+
+
+def normalize_bboxes(df):
+    df = df.copy()
+    df["x1"] = df["x1"] / df["original_width"]
+    df["x2"] = df["x2"] / df["original_width"]
+    df["y1"] = df["y1"] / df["original_height"]
+    df["y2"] = df["y2"] / df["original_height"]
+    return df
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
