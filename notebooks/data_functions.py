@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
 import shutil
+from PIL import Image
 
 def remove_duplicates(df):
     return df.drop_duplicates(inplace=False)
@@ -68,9 +69,9 @@ def copy_imgs_to_folder(df, dst_folder, org_img_folder_path):
     for _, row in df.iterrows():
         img_filename = row['image']
         img_type = row['type']
-        src_path = org_img_folder_path + '/images_' + img_type
+        src_path = org_img_folder_path + '/images_' + img_type + '/' + img_filename
         
-        shutil.copy(src_path, dst_folder + '/' + image)
+        shutil.copy(src_path, dst_folder + '/' + img_filename)
 
 
 def prepare_bboxes(df):
@@ -88,17 +89,17 @@ def prepare_bboxes(df):
     return df
 
 def store_lables_as_txt(df, output_path):
-    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_path, exist_ok=True)
 
     for image_name, group in df.groupby("image"):
         lines = []
 
         for _, row in group.iterrows():
-            line = f"0 {row['x_center']:.6f} {row['y_center']:.6f}{row['width']:.6f} {row['height']:.6f}"
+            line = f"0 {row['x_center']:.6f} {row['y_center']:.6f} {row['bb_width']:.6f} {row['bb_height']:.6f}"
             lines.append(line)
 
-        filename = os.path.splitext(os.path.basename(image_id))[0] + ".txt"
-        filepath = os.path.join(output_dir, filename)
+        filename = os.path.splitext(os.path.basename(image_name))[0] + ".txt"
+        filepath = os.path.join(output_path, filename)
 
         with open(filepath, "w") as f:
             f.write("\n".join(lines))
