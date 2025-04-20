@@ -1,3 +1,8 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import os
+import shutil
+
 def remove_duplicates(df):
     return df.drop_duplicates(inplace=False)
 
@@ -55,8 +60,8 @@ def get_image_size_dict(folder_path):
 
 def add_image_size_to_df(df, image_size_dict):
     df = df.copy()
-    df['original_width'] = df['image'].map(lambda img: image_size_dict[img][0])
-    df['original_height'] = df['image'].map(lambda img: image_size_dict[img][1])
+    df['original_img_width'] = df['image'].map(lambda img: image_size_dict[img][0])
+    df['original_img_height'] = df['image'].map(lambda img: image_size_dict[img][1])
     return df
 
 def copy_imgs_to_folder(df, dst_folder, org_img_folder_path):
@@ -68,14 +73,35 @@ def copy_imgs_to_folder(df, dst_folder, org_img_folder_path):
         shutil.copy(src_path, dst_folder + '/' + image)
 
 
-def normalize_bboxes(df):
+def prepare_bboxes(df):
     df = df.copy()
-    df["x1"] = df["x1"] / df["original_width"]
-    df["x2"] = df["x2"] / df["original_width"]
-    df["y1"] = df["y1"] / df["original_height"]
-    df["y2"] = df["y2"] / df["original_height"]
+    df["x1"] = df["x1"] / df["original_img_width"]
+    df["x2"] = df["x2"] / df["original_img_width"]
+    df["y1"] = df["y1"] / df["original_img_height"]
+    df["y2"] = df["y2"] / df["original_img_height"]
+
+    df["x_center"] = (df["x1"] + df["x2"]) / 2
+    df["y_center"] = (df["y1"] + df["y2"]) / 2
+    df["bb_width"] = df["x2"] - df["x1"]
+    df["bb_height"] = df["y2"] - df["y1"]
+    
     return df
-        
+
+def store_lables_as_txt(df, output_path):
+    os.makedirs(output_dir, exist_ok=True)
+
+    for image_name, group in df.groupby("image"):
+        lines = []
+
+        for _, row in group.iterrows():
+            line = f"0 {row['x_center']:.6f} {row['y_center']:.6f}{row['width']:.6f} {row['height']:.6f}"
+            lines.append(line)
+
+        filename = os.path.splitext(os.path.basename(image_id))[0] + ".txt"
+        filepath = os.path.join(output_dir, filename)
+
+        with open(filepath, "w") as f:
+            f.write("\n".join(lines))
 
 
 
