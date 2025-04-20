@@ -35,15 +35,14 @@ def clip_negative_coord_values(df):
     df[cols] = df[cols].clip(lower=0)
     return df
 
-def resize_images(input_folder, output_folder, new_size: tuple):
-    os.makedirs(output_folder, exist_ok=True)
+def resize_images(img_folder, new_size: tuple):
 
-    for filename in os.listdir(input_folder):
+    for filename in os.listdir(img_folder):
         if filename.lower().endswith('.jpg'):
-            img_path = os.path.join(input_folder, filename)
+            img_path = os.path.join(img_folder, filename)
             img = Image.open(img_path)
             img_resized = img.resize(new_size)
-            img_resized.save(os.path.join(output_folder, filename))
+            img_resized.save(img_path)
 
 def get_image_size_dict(folder_path):
     image_size_dict = {}
