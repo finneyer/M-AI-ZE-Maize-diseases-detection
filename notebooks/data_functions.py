@@ -1,0 +1,123 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import os
+import shutil
+from PIL import Image
+
+def remove_duplicates(df):
+    return df.drop_duplicates(inplace=False)
+
+def order_coordinates(df):
+    df = df.copy()
+    df['x1'], df['x2'] = df[['x1', 'x2']].min(axis=1), df[['x1', 'x2']].max(axis=1)
+    df['y1'], df['y2'] = df[['y1', 'y2']].min(axis=1), df[['y1', 'y2']].max(axis=1)
+    return df
+
+def remove_no_area_boxes(df):
+    df = df.copy()
+    return df[(df['x1'] != df['x2']) & (df['y1'] != df['y2'])]
+
+
+def unify_img_suffix(folder_path):
+    rename_extensions = ['.JPG', '.Jpeg']
+
+    for filename in os.listdir(folder_path):
+        name, ext = os.path.splitext(filename)
+
+        if ext in rename_extensions:
+            old_path = os.path.join(folder_path, filename)
+            new_path = os.path.join(folder_path, name + '.jpg')
+            os.rename(old_path, new_path)
+            print(f'Renamed: {filename} -> {name}.jpg')
+
+def unify_img_suffix_df(df):
+    df = df.copy()
+    df['image'] = df['image'].str.replace(r'\.(jpe?g)$', '.jpg', case=False, regex=True)
+    return df
+
+def clip_negative_coord_values(df):
+    df = df.copy()
+    cols = ['x1', 'y1', 'x2', 'y2']
+    df[cols] = df[cols].clip(lower=0)
+    return df
+
+def resize_images(img_folder, new_size: tuple):
+
+    for filename in os.listdir(img_folder):
+        if filename.lower().endswith('.jpg'):
+            img_path = os.path.join(img_folder, filename)
+            img = Image.open(img_path)
+            img_resized = img.resize(new_size)
+            img_resized.save(img_path)
+
+def get_image_size_dict(folder_path):
+    image_size_dict = {}
+    for filename in os.listdir(folder_path):
+        if filename.lower().endswith('.jpg'):
+            img = Image.open(os.path.join(folder_path, filename))
+            image_size_dict[filename] = img.size
+
+    return image_size_dict
+
+def add_image_size_to_df(df, image_size_dict):
+    df = df.copy()
+    df['original_img_width'] = df['image'].map(lambda img: image_size_dict[img][0])
+    df['original_img_height'] = df['image'].map(lambda img: image_size_dict[img][1])
+    return df
+
+def copy_imgs_to_folder(df, dst_folder, org_img_folder_path):
+    for _, row in df.iterrows():
+        img_filename = row['image']
+        img_type = row['type']
+        src_path = org_img_folder_path + '/images_' + img_type + '/' + img_filename
+        
+        shutil.copy(src_path, dst_folder + '/' + img_filename)
+
+
+def prepare_bboxes(df):
+    df = df.copy()
+    df["x1"] = df["x1"] / df["original_img_width"]
+    df["x2"] = df["x2"] / df["original_img_width"]
+    df["y1"] = df["y1"] / df["original_img_height"]
+    df["y2"] = df["y2"] / df["original_img_height"]
+
+    df["x_center"] = (df["x1"] + df["x2"]) / 2
+    df["y_center"] = (df["y1"] + df["y2"]) / 2
+    df["bb_width"] = df["x2"] - df["x1"]
+    df["bb_height"] = df["y2"] - df["y1"]
+    
+    return df
+
+def store_lables_as_txt(df, output_path):
+    os.makedirs(output_path, exist_ok=True)
+
+    for image_name, group in df.groupby("image"):
+        lines = []
+
+        for _, row in group.iterrows():
+            line = f"0 {row['x_center']:.6f} {row['y_center']:.6f} {row['bb_width']:.6f} {row['bb_height']:.6f}"
+            lines.append(line)
+
+        filename = os.path.splitext(os.path.basename(image_name))[0] + ".txt"
+        filepath = os.path.join(output_path, filename)
+
+        with open(filepath, "w") as f:
+            f.write("\n".join(lines))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
