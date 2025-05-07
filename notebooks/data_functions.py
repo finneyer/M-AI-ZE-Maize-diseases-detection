@@ -105,26 +105,38 @@ def store_lables_as_txt(df, output_path):
             f.write("\n".join(lines))
 
 
-def train_val_test_split(df, train_size, val_size):
+def train_val_test_split(df, train_size, val_size=None, random_state=42, use_val=True):
 
-    val_test_size = round(1 - train_size, 5)
-    
-    train_df, temp_df = train_test_split(
-        df,
-        test_size = val_test_size,
-        stratify = df['type'],
-        random_state = RANDOM_STATE 
-    )
+    if use_val:
+        if val_size is None:
+            raise ValueError("val_size must be specified when use_val is True.")
+        
+        val_test_size = round(1 - train_size, 5)
+        train_df, temp_df = train_test_split(
+            df,
+            test_size=val_test_size,
+            stratify=df['type'],
+            random_state=random_state
+        )
 
-    test_size_prop = round((1 / val_test_size) * (val_test_size - val_size), 5)
-    
-    eval_df, test_df = train_test_split(
-        temp_df,
-        test_size = test_size_prop,
-        stratify = temp_df['type'],
-        random_state = RANDOM_STATE
-    )
-    return train_df, eval_df, test_df
+        test_size_prop = round((1 / val_test_size) * (val_test_size - val_size), 5)
+
+        val_df, test_df = train_test_split(
+            temp_df,
+            test_size=test_size_prop,
+            stratify=temp_df['type'],
+            random_state=random_state
+        )
+        return train_df, val_df, test_df
+    else:
+        test_size = round(1 - train_size, 5)
+        train_df, test_df = train_test_split(
+            df,
+            test_size=test_size,
+            stratify=df['type'],
+            random_state=random_state
+        )
+        return train_df, test_df
 
 
 def check_type_ratio(train_df, eval_df = None, test_df = None):
