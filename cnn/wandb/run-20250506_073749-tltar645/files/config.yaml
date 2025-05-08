@@ -1,0 +1,41 @@
+_wandb:
+    value:
+        cli_version: 0.19.10
+        m: []
+        python_version: 3.12.8
+        t:
+            "1":
+                - 2
+                - 3
+                - 5
+                - 53
+                - 55
+            "2":
+                - 2
+                - 3
+                - 5
+                - 53
+                - 55
+            "3":
+                - 13
+                - 16
+                - 23
+                - 55
+            "4": 3.12.8
+            "5": 0.19.10
+            "8":
+                - 1
+                - 5
+            "12": 0.19.10
+            "13": linux-x86_64
+names:
+    value:
+        "0": lesion
+path:
+    value: /exchange/dspro2/M-AI-ZE/data/adjusted/1.1/splits/SID01
+test:
+    value: images/test
+train:
+    value: images/train
+val:
+    value: images/val
