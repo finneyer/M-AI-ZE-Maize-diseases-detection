@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from utils import draw_fake_detections
+from utils import draw_real_detections
 import uuid
 
 def display_title_and_description():
@@ -21,7 +21,7 @@ def handle_file_upload():
         image = Image.open(uploaded_file).convert("RGB")
         st.session_state["uploaded_image"] = image
         st.session_state["uploaded_filename"] = uploaded_file.name
-        st.session_state["detection_result"] = None  # Reset detection result on new upload
+        st.session_state["detection_result"] = None  
 
 def display_results():
     if st.session_state["uploaded_image"] is not None:
@@ -29,7 +29,7 @@ def display_results():
 
         st.write("Simulating detection...")
         if st.session_state["detection_result"] is None:
-            st.session_state["detection_result"], _ = draw_fake_detections(st.session_state["uploaded_image"].copy())
+            st.session_state["detection_result"], _ = draw_real_detections(st.session_state["uploaded_image"].copy())
 
         st.image(st.session_state["detection_result"], caption="Detected Disease (Mock)", use_container_width=True)
     else:
