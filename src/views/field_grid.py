@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from utils import draw_fake_detections
+from utils import draw_fake_detections, draw_tf_detections, draw_real_detections
 
 def display_title_and_description():
     """Displays the title and description for the grid page."""
@@ -13,6 +13,8 @@ def initialize_session_state():
         st.session_state["uploaded_images_grid"] = []
     if "detection_results_grid" not in st.session_state:
         st.session_state["detection_results_grid"] = [None] * 64  # Initialize for 64 images
+    if "grid_model_choice" not in st.session_state:
+        st.session_state["grid_model_choice"] = "TensorFlow"
 
 def handle_image_upload(num_images_expected):
     """Handles the upload of images and validates the number, also updates session state."""
@@ -30,17 +32,29 @@ def handle_image_upload(num_images_expected):
             return True
     return False
 
+def select_grid_model():
+    st.session_state["grid_model_choice"] = st.radio(
+        "Choose model for detection:",
+        ("YOLO", "TensorFlow"),
+        index=1,
+        horizontal=True,
+        key="grid_model_radio"
+    )
+
 def process_images_and_get_results():
-    """Processes the uploaded images and simulates disease detection, caching results."""
+    """Processes the uploaded images and runs detection, caching results."""
     images = st.session_state.get("uploaded_images_grid", [])
     detection_results = st.session_state.get("detection_results_grid", [])
     num_images = len(images)
+    model_choice = st.session_state.get("grid_model_choice", "TensorFlow")
 
     if num_images > 0 and (any(result is None for result in detection_results)):
         for i in range(num_images):
             if detection_results[i] is None:
-                # Simulate detection for each image
-                _, num_detections = draw_fake_detections(images[i].copy())
+                if model_choice == "YOLO":
+                    _, num_detections = draw_real_detections(images[i].copy())
+                else:
+                    _, num_detections = draw_tf_detections(images[i].copy())
                 detection_results[i] = num_detections
         st.session_state["detection_results_grid"] = detection_results
     return detection_results
@@ -83,6 +97,7 @@ def run():
 
     display_title_and_description()
     initialize_session_state()
+    select_grid_model()
     files_uploaded = handle_image_upload(num_images_expected)
 
     if st.session_state["uploaded_images_grid"]:

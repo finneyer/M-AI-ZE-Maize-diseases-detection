@@ -9,8 +9,8 @@ __pycache__/
 # Files
 src/temp_uploads
 cnn/wandb/
+src/artifacts/
 cnn/saved_cnn_models
-
 
 # Distribution / packaging
 .Python
