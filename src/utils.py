@@ -59,7 +59,7 @@ def draw_real_detections(image):
 @st.cache_resource
 def load_tf_model_from_wandb():
     api = wandb.init()
-    artifact = api.use_artifact('rueedi-tobias-hochschule-luzern/Own CNN/cnn-model:v2', type='model')
+    artifact = api.use_artifact('rueedi-tobias-hochschule-luzern/Own CNN/cnn-model:v3', type='model')
     model_path = artifact.download()
     # Look for .h5 or .keras file
     for file in os.listdir(model_path):
@@ -71,7 +71,6 @@ def load_tf_model_from_wandb():
     model = tf.keras.models.load_model(tf_path, compile=False)
     return model
 
-@st.cache_data
 @st.cache_data
 def draw_tf_detections(image):
     model = load_tf_model_from_wandb()

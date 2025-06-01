@@ -15,7 +15,7 @@ load_model_from_wandb()
 
 if page == "Single Image Detection":
     single_image.run()
-elif page == "Batch Detection":
-    batch_field.run()
+#elif page == "Batch Detection":
+#    batch_field.run()
 elif page == "Field Disease Detection":
     field_grid.run()
