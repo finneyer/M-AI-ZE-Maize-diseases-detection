@@ -10,6 +10,7 @@ __pycache__/
 src/temp_uploads
 cnn/wandb/
 src/artifacts/
+src/wandb
 cnn/saved_cnn_models
 
 # Distribution / packaging
