@@ -13,6 +13,7 @@ cnn/artifacts
 src/artifacts/
 src/wandb
 cnn/saved_cnn_models
+data
 
 # Distribution / packaging
 .Python
