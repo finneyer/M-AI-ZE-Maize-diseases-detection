@@ -105,8 +105,74 @@ def store_lables_as_txt(df, output_path):
             f.write("\n".join(lines))
 
 
+def train_val_test_split(df, train_size, val_size=None, random_state=42, use_val=True):
+
+    if use_val:
+        if val_size is None:
+            raise ValueError("val_size must be specified when use_val is True.")
+        
+        val_test_size = round(1 - train_size, 5)
+        train_df, temp_df = train_test_split(
+            df,
+            test_size=val_test_size,
+            stratify=df['type'],
+            random_state=random_state
+        )
+
+        test_size_prop = round((1 / val_test_size) * (val_test_size - val_size), 5)
+
+        val_df, test_df = train_test_split(
+            temp_df,
+            test_size=test_size_prop,
+            stratify=temp_df['type'],
+            random_state=random_state
+        )
+        return train_df, val_df, test_df
+    else:
+        test_size = round(1 - train_size, 5)
+        train_df, test_df = train_test_split(
+            df,
+            test_size=test_size,
+            stratify=df['type'],
+            random_state=random_state
+        )
+        return train_df, test_df
 
 
+def check_type_ratio(train_df, eval_df = None, test_df = None):
+    train_rows = train_df.shape[0]
+    train_boom = train_df[train_df['type'] == 'boom'].shape[0]
+    train_drone = train_df[train_df['type'] == 'drone'].shape[0]
+    train_handheld = train_df[train_df['type'] == 'handheld'].shape[0]
+
+    print(f'------TRAIN DATA:------')
+    print(f'Boom portion: {(100 / train_rows) * train_boom}%')
+    print(f'Drone portion: {(100 / train_rows) * train_drone}%')
+    print(f'Handheld portion: {(100 / train_rows) * train_handheld}%')
+
+    if eval_df is not None:
+        eval_rows = eval_df.shape[0]
+        eval_boom = eval_df[eval_df['type'] == 'boom'].shape[0]
+        eval_drone = eval_df[eval_df['type'] == 'drone'].shape[0]
+        eval_handheld = eval_df[eval_df['type'] == 'handheld'].shape[0]
+    
+        print(f'------EVALUATION DATA:------')
+        print(f'Boom portion: {(100 / eval_rows) * eval_boom}%')
+        print(f'Drone portion: {(100 / eval_rows) * eval_drone}%')
+        print(f'Handheld portion: {(100 / eval_rows) * eval_handheld}%')
+
+    if test_df is not None:
+        test_rows = test_df.shape[0]
+        test_boom = test_df[test_df['type'] == 'boom'].shape[0]
+        test_drone = test_df[test_df['type'] == 'drone'].shape[0]
+        test_handheld = test_df[test_df['type'] == 'handheld'].shape[0]
+    
+        print(f'------TEST DATA:------')
+        print(f'Boom portion: {(100 / test_rows) * test_boom}%')
+        print(f'Drone portion: {(100 / test_rows) * test_drone}%')
+        print(f'Handheld portion: {(100 / test_rows) * test_handheld}%')
+        
+    
 
 
 
