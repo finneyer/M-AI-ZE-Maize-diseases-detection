@@ -10,6 +10,16 @@ __pycache__/
 src/temp_uploads
 cnn/wandb/
 cnn/saved_cnn_models
+cnn/saved_test_set
+cnn/saved_test_set_5
+cnn/saved_test_set_20
+
+
+
+
+
+
+
 
 
 # Distribution / packaging
