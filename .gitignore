@@ -13,6 +13,9 @@ cnn/artifacts
 src/artifacts/
 src/wandb
 cnn/saved_cnn_models
+cnn/saved_test_set
+cnn/saved_test_set_5
+cnn/saved_test_set_20
 data
 
 # Distribution / packaging
