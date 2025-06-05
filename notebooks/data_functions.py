@@ -13,9 +13,23 @@ def order_coordinates(df):
     df['y1'], df['y2'] = df[['y1', 'y2']].min(axis=1), df[['y1', 'y2']].max(axis=1)
     return df
 
-def remove_no_area_boxes(df):
+def adjust_no_area_boxes(df, width_height):
     df = df.copy()
-    return df[(df['x1'] != df['x2']) & (df['y1'] != df['y2'])]
+    add_per_dim = width_height / 2
+    
+    same_y = df['y1'] == df['y2']
+    df.loc[same_y, 'y1'] = df.loc[same_y, 'y1'] + add_per_dim
+    df.loc[same_y, 'y2'] = df.loc[same_y, 'y2'] - add_per_dim
+
+    same_x = df['x1'] == df['x2']
+    df.loc[same_x, 'x1'] = df.loc[same_x, 'x1'] - add_per_dim
+    df.loc[same_x, 'x2'] = df.loc[same_x, 'x2'] + add_per_dim
+    
+    return df
+
+def remove_dot_boxes(df):
+    df = df.copy()
+    return df[~((df['x1'] == df['x2']) & (df['y1'] == df['y2']))]
 
 
 def unify_img_suffix(folder_path):
