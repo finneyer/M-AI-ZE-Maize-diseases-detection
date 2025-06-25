@@ -41,7 +41,7 @@ def load_model_from_wandb():
     model.to('cpu') 
     return model
 
-@st.cache_data
+#@st.cache_data
 def draw_real_detections(image):
     model = load_model_from_wandb()
     results = model.predict(image)
@@ -101,7 +101,7 @@ for file in os.listdir(model_path):
         model_g5.trainable = False
         break
 
-@st.cache_data
+#@st.cache_data
 def draw_tf_detections(image):
     # Use the three loaded models: model_g20, model_g10, model_g5 (already loaded above)
     # Preprocess image
