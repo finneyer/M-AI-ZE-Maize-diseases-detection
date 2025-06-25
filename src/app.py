@@ -8,7 +8,7 @@ import wandb
 st.set_page_config(page_title="Corn Disease Detector", layout="centered")
 
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Single Image Detection", "Batch Detection", "Field Disease Detection"])
+page = st.sidebar.radio("Go to", ["Single Image Detection", "Field Disease Detection"])
 
 wandb.login(key="017feefe0af6702cda76aab121ec71cf3a362fec")
 load_model_from_wandb()
