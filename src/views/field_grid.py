@@ -52,10 +52,10 @@ def process_images_and_get_results():
         for i in range(num_images):
             if detection_results[i] is None:
                 if model_choice == "YOLO":
-                    _, num_detections = draw_real_detections(images[i].copy())
+                    _, covered_area = draw_real_detections(images[i].copy())
                 else:
-                    _, num_detections = draw_tf_detections(images[i].copy())
-                detection_results[i] = num_detections
+                    _, covered_area = draw_tf_detections(images[i].copy())
+                detection_results[i] = covered_area
         st.session_state["detection_results_grid"] = detection_results
     return detection_results
 
@@ -68,18 +68,20 @@ def display_detection_grid(detection_results, grid_size):
         for col in range(grid_size):
             with cols[col]:
                 if result_index < len(detection_results):
-                    num_detections = detection_results[result_index]
-                    normalized_value = num_detections / 10.0 if num_detections is not None else 0.0
-                    normalized_value = max(0.0, min(1.0, normalized_value)) # Ensure value is within 0-1
+                    coverd_area = detection_results[result_index]
+                    coverd_area = coverd_area/100
+                    coverd_area = min(0.25, coverd_area)  # Cap the covered area to a maximum of 0.25
+                    coverd_area = coverd_area * 4  # Scale to a range of 0-1 for color mapping
+                    coverd_area = max(0.0, min(1.0, coverd_area)) # Ensure value is within 0-1
 
-                    red = int(255 * normalized_value)
-                    green = int(255 * (1 - normalized_value))
+                    red = int(255 * coverd_area)
+                    green = int(255 * (1 - coverd_area))
                     blue = 0
 
                     color = f"rgb({red}, {green}, {blue})"
 
                     st.markdown(
-                        f'<div style="width: 30px; height: 30px; background-color: {color}; border: 1px solid black;"></div>',
+                        f'<div style="width: 50px; height: 50px; background-color: {color}; border: 1px solid black;"></div>',
                         unsafe_allow_html=True
                     )
                     result_index += 1
